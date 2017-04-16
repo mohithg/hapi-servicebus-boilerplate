@@ -1,5 +1,8 @@
 import Boom from 'boom';
+import servicebus from 'servicebus';
 import { createUser, login } from './helpers/user';
+
+const bus = servicebus.bus();
 
 const register = (server, options, next) => {
   server.route({
@@ -19,8 +22,10 @@ const register = (server, options, next) => {
       auth: false,
       handler: (req, reply) => {
         const data = req.payload;
-        const user = createUser(data);
-        reply({ token: user });
+        bus.publish('user.create', data);
+        bus.listen('user.created', (token) => {
+          reply({ token });
+        });
       },
     },
   });

@@ -1,7 +1,14 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import servicebus from 'servicebus';
 import User from '../models/user';
 import config from '../../../config';
+
+const bus = servicebus.bus();
+
+bus.subscribe('user.create', (data) => {
+  createUser(data);
+});
 
 export const hashPassword = (plainText) => {
   const saltRounds = 10;
@@ -18,7 +25,8 @@ export const createUser = (data) => {
   data.password = hashPassword(data.password);
   const newUser = new User(data);
   newUser.save();
-  return createToken(newUser);
+  const token = createToken(newUser);
+  bus.send('user.created', token);
 };
 
 export const login = async (data) => {
