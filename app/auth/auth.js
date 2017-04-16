@@ -19,8 +19,8 @@ const register = (server, options, next) => {
       auth: false,
       handler: (req, reply) => {
         const data = req.payload;
-        createUser(data);
-        reply('User Created Successfully');
+        const user = createUser(data);
+        reply({ token: user });
       },
     },
   });
