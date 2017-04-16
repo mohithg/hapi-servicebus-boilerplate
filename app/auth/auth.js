@@ -1,5 +1,5 @@
 import Boom from 'boom';
-import { createUser } from './helpers/user';
+import { createUser, login } from './helpers/user';
 
 const register = (server, options, next) => {
   server.route({
@@ -20,6 +20,18 @@ const register = (server, options, next) => {
       handler: (req, reply) => {
         const data = req.payload;
         const user = createUser(data);
+        reply({ token: user });
+      },
+    },
+  });
+  server.route({
+    method: 'POST',
+    path: '/login',
+    config: {
+      auth: false,
+      handler: async (req, reply) => {
+        const data = req.payload;
+        const user = await login(data);
         reply({ token: user });
       },
     },
