@@ -1,18 +1,21 @@
 import Boom from 'boom';
 import amqprpc from 'amqp-rpc';
+import servicebus from 'servicebus';
 import subscribers from './subscribers/subscriber';
 import { login } from './helpers/user';
 
 const rpc = amqprpc.factory();
+const bus = servicebus.bus();
 
 const register = (server, options, next) => {
   server.route({
-    method: 'GET',
-    path: '/auth',
+    method: 'POST',
+    path: '/do_something',
     config: {
       auth: false,
       handler: (req, reply) => {
-        reply({ hai: 'World' });
+        bus.publish('do.something', req.payload);
+        reply({ success: true });
       },
     },
   });
