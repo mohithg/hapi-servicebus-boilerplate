@@ -1,7 +1,10 @@
 import Boom from 'boom';
 import servicebus from 'servicebus';
-import { createUser, login } from './helpers/user';
+import amqprpc from 'amqp-rpc';
+import subscribers from './subscribers/subscriber';
+import { login } from './helpers/user';
 
+const rpc = amqprpc.factory();
 const bus = servicebus.bus();
 
 const register = (server, options, next) => {
@@ -23,8 +26,9 @@ const register = (server, options, next) => {
       handler: (req, reply) => {
         const data = req.payload;
         bus.publish('user.create', data);
-        bus.listen('user.created', (token) => {
-          reply({ token });
+        rpc.call('user.created', {}, (response) => {
+          console.log(response);
+          reply(response);
         });
       },
     },
