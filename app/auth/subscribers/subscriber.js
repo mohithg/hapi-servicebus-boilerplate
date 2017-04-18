@@ -9,22 +9,16 @@ const bus = servicebus.bus();
 const createUser = async (data) => {
   data.password = hashPassword(data.password);
   const newUser = new User(data);
-  // try {
-  //   await newUser.save();
-  // } catch (e) {
-  //   rpc.on('user.created', (param, cb) => {
-  //     console.log(param);
-  //     cb(e);
-  //   });
-  //   return;
-  // }
+  try {
+    await newUser.save();
+  } catch (e) {
+    rpc.call('user.created', e, ()=>{});
+    return;
+  }
   const token = createToken(newUser);
-  rpc.on('user.created', (param, cb)=>{
-    console.log(param);
-    cb({token});
-  });
+  rpc.call('user.created', { token }, ()=>{});
 };
 
-bus.subscribe('user.create', (data) => {
+rpc.on('user.create', (data) => {
   createUser(data);
 });

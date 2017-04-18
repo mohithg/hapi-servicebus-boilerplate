@@ -25,8 +25,8 @@ const register = (server, options, next) => {
       auth: false,
       handler: (req, reply) => {
         const data = req.payload;
-        bus.publish('user.create', data);
-        rpc.call('user.created', {}, (response) => {
+        rpc.call('user.create', data);
+        rpc.on('user.created', (response) => {
           console.log(response);
           reply(response);
         });
