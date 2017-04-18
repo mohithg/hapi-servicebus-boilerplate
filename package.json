@@ -10,6 +10,7 @@
   "author": "Mohith G",
   "license": "ISC",
   "dependencies": {
+    "amqp-rpc": "0.0.8",
     "babel-core": "^6.24.0",
     "babel-plugin-transform-async-to-generator": "^6.24.1",
     "babel-polyfill": "^6.23.0",
@@ -23,7 +24,8 @@
     "joi": "^10.4.1",
     "jsonwebtoken": "^7.3.0",
     "mongoose": "^4.9.4",
-    "servicebus": "^2.0.10"
+    "servicebus": "^2.0.10",
+    "servicebus-retry": "0.0.11"
   },
   "devDependencies": {
     "eslint": "^3.19.0",
